@@ -8,7 +8,7 @@ object SpatialQuery extends App {
   * Output: Boolean (true or false)
   * Definition: Parse queryRectangle as x & Y coordinates of two diagonally opposite points
   *             Parse pointString as X & Y coordinates
-  *             Check whether the queryRectangle fully contains the point considering on-boundary points as well.
+  *             Check whether the queryRectangle fully contains the point considering on-boundary points as well
   * Example Inputs: queryRectangle = "-155.940114, 19.081331, -155.618917, 19.5307"
   *                 pointString = "-88.331492, 32.324142"
   * */
@@ -39,7 +39,36 @@ object SpatialQuery extends App {
     return false
   }
 
+  /*
+  * Input: pointString1:String, pointString2:String, distance:Double
+  * Output: Boolean (true or false)
+  * Definition: Parse pointString1 & Parse pointString2 as X & Y coordinates
+  *             Check whether the two points are within the given distance considering on-boundary point
+  *             To simplify the problem, please assume all coordinates are on a planar space and calculate their
+  *             Euclidean distance
+  *  Example Inputs: pointString1 = "-88.331492,32.324142"
+  *                  pointString2 = "-88.331492,32.324142"
+  */
   def ST_Within(pointString1:String, pointString2:String, distance:Double): Boolean = {
+    if (pointString1 == null || pointString1.isEmpty() || pointString2 == null || pointString2.isEmpty() || distance <= 0.00)
+      return false
+
+    val point1Coordinates = pointString1.split(",")
+    if(point1Coordinates.length < 2)
+      return false
+
+    val point2Coordinates = pointString2.split(",")
+    if(point2Coordinates.length < 2)
+      return false
+
+    val xOfPoint1 = point1Coordinates(0).trim.toDouble
+    val yOfPoint1 = point1Coordinates(1).trim.toDouble
+    val xOfPoint2 = point2Coordinates(0).trim.toDouble
+    val yOfPoint2 = point2Coordinates(1).trim.toDouble
+
+    val euclideanDistance = math.sqrt(math.pow(xOfPoint1 - xOfPoint2, 2) + math.pow(yOfPoint1 - yOfPoint2, 2))
+    if(euclideanDistance <= distance)
+      return true
     return false
   }
 
