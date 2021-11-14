@@ -13,28 +13,31 @@ object SpatialQuery extends App {
   *                 pointString = "-88.331492, 32.324142"
   * */
   def ST_Contains(queryRectangle: String, pointString: String): Boolean = {
-    if(queryRectangle == null || queryRectangle.isEmpty() || pointString == null || pointString.isEmpty())
+    // check for validity of input data, i.e whether input is null or empty
+    if(queryRectangle == null || queryRectangle.isEmpty || pointString == null || pointString.isEmpty) {
       return false
+    }
 
     val rectangleCoordinates = queryRectangle.split(",")
-    if(rectangleCoordinates.length < 4)
+    val pointCoordinates = pointString.split(",")
+
+    // check whether the points have correct number of coordinates
+    if(rectangleCoordinates.length < 4 || pointCoordinates.length < 2) {
       return false
+    }
 
     val xOfCorner1 = rectangleCoordinates(0).trim.toDouble
     val yOfCorner1 = rectangleCoordinates(1).trim.toDouble
     val xOfCorner2 = rectangleCoordinates(2).trim.toDouble
     val yOfCorner2 = rectangleCoordinates(3).trim.toDouble
-
-    val pointCoordinates = pointString.split(",")
-    if(pointCoordinates.length < 2)
-      return false
-
     val pointX = pointCoordinates(0).trim.toDouble
     val pointY = pointCoordinates(1).trim.toDouble
 
+    //check whether the rectangle contains given point
     if(pointX >=  math.min(xOfCorner1, xOfCorner2) && pointX <= math.max(xOfCorner1, xOfCorner2)
-      && pointY >= math.min(yOfCorner1, yOfCorner2) && pointY <= math.max(yOfCorner1, yOfCorner2))
+      && pointY >= math.min(yOfCorner1, yOfCorner2) && pointY <= math.max(yOfCorner1, yOfCorner2)) {
       return true
+    }
 
     return false
   }
@@ -49,26 +52,31 @@ object SpatialQuery extends App {
   *  Example Inputs: pointString1 = "-88.331492,32.324142"
   *                  pointString2 = "-88.331492,32.324142"
   */
-  def ST_Within(pointString1:String, pointString2:String, distance:Double): Boolean = {
-    if (pointString1 == null || pointString1.isEmpty() || pointString2 == null || pointString2.isEmpty() || distance <= 0.00)
+  def ST_Within(pointString1: String, pointString2: String, distance: Double): Boolean = {
+    // check for validity of input data, i.e whether input is null or empty or if the distance is zero or negative
+    if (pointString1 == null || pointString1.isEmpty() || pointString2 == null || pointString2.isEmpty() || distance <= 0.00) {
       return false
+    }
 
     val point1Coordinates = pointString1.split(",")
-    if(point1Coordinates.length < 2)
-      return false
-
     val point2Coordinates = pointString2.split(",")
-    if(point2Coordinates.length < 2)
+
+    // check whether the points have correct number of coordinates
+    if(point1Coordinates.length < 2 || point2Coordinates.length < 2) {
       return false
+    }
 
     val xOfPoint1 = point1Coordinates(0).trim.toDouble
     val yOfPoint1 = point1Coordinates(1).trim.toDouble
     val xOfPoint2 = point2Coordinates(0).trim.toDouble
     val yOfPoint2 = point2Coordinates(1).trim.toDouble
-
     val euclideanDistance = math.sqrt(math.pow(xOfPoint1 - xOfPoint2, 2) + math.pow(yOfPoint1 - yOfPoint2, 2))
-    if(euclideanDistance <= distance)
+
+    // check whether the two points are within the given distance
+    if(euclideanDistance <= distance) {
       return true
+    }
+
     return false
   }
 
